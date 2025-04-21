@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BLEMB666</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body, html {
+      height: 100%;
+      background: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+    .container {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    h1 {
+      font-size: 4rem;
+      margin-bottom: 20px;
+    }
+    .socials {
+      display: flex;
+      gap: 20px;
+    }
+    .socials a img {
+      width: 40px;
+      height: 40px;
+      filter: invert(1);
+      transition: transform 0.3s;
+    }
+    .socials a img:hover {
+      transform: scale(1.2);
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg"></canvas>
+  <div class="container">
+    <h1>BLEMB666</h1>
+    <div class="socials">
+      <a href="https://t.me/alonedeadlysins" target="_blank">
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/telegram.svg" alt="Telegram" />
+      </a>
+      <a href="https://discord.com/channels/@me/1188970358120927273" target="_blank">
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/discord.svg" alt="Discord" />
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('bg');
+    const ctx = canvas.getContext('2d');
+    let w, h;
+    function resize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    let angle = 0;
+
+    function drawCubeLines(cx, cy, size, angle) {
+      const points = [];
+      const a = Math.cos(angle), b = Math.sin(angle);
+      for (let i = 0; i < 8; i++) {
+        const x = ((i & 1) ? 1 : -1) * size / 2;
+        const y = ((i & 2) ? 1 : -1) * size / 2;
+        const z = ((i & 4) ? 1 : -1) * size / 2;
+
+        const x1 = a * x - b * z;
+        const z1 = b * x + a * z;
+
+        const scale = 300 / (300 + z1);
+        const px = cx + x1 * scale;
+        const py = cy + y * scale;
+        points.push([px, py]);
+      }
+
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 1;
+      const edges = [
+        [0,1],[1,3],[3,2],[2,0],
+        [4,5],[5,7],[7,6],[6,4],
+        [0,4],[1,5],[2,6],[3,7]
+      ];
+
+      for (const [i, j] of edges) {
+        ctx.beginPath();
+        ctx.moveTo(points[i][0], points[i][1]);
+        ctx.lineTo(points[j][0], points[j][1]);
+        ctx.stroke();
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, w, h);
+      drawCubeLines(w/2, h/2, 150, angle);
+      angle += 0.01;
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+</body>
+</html>
